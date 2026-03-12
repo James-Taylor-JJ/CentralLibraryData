@@ -1,16 +1,45 @@
-import os
-import pandas as pd
 import logging
-import os
+from pathlib import Path
 
-# Read in the json files and create a log file with information of all data that is missing or null
-logging.basicConfig(filename='data_quality.log', level=logging.INFO)
+import pandas as pd
 
-json_files = [f for f in os.listdir('.') if f.endswith('.json')]
 
-for file in json_files:
-    df = pd.read_json(file)
+DATA_DIR = Path("LMS-DataStuff")
+LOG_FILE = Path("data_quality.log")
+
+
+logging.basicConfig(
+    filename=LOG_FILE,
+    filemode="w",
+    level=logging.INFO,
+    format="%(message)s",
+)
+
+
+def get_json_files(data_dir: Path) -> list[Path]:
+    return sorted(path for path in data_dir.rglob("*.json") if path.is_file())
+
+
+def log_missing_data(json_file: Path) -> None:
+    try:
+        df = pd.read_json(json_file)
+    except ValueError:
+        df = pd.read_json(json_file, lines=True)
+    except Exception as error:
+        logging.info(f"{json_file}: failed to read JSON ({error})")
+        return
+
     missing_data = df.isnull().sum()
-    for column, missing_count in missing_data.items():
-        if missing_count > 0:
-            logging.info(f'{file} - Column: {column} has {missing_count} missing values')
+    missing_columns = missing_data[missing_data > 0]
+
+    if missing_columns.empty:
+        logging.info(f"{json_file}: no missing values found")
+        return
+
+    logging.info(f"{json_file}:")
+    for column, missing_count in missing_columns.items():
+        logging.info(f"  {column}: {missing_count} missing values")
+
+
+for json_file in get_json_files(DATA_DIR):
+    log_missing_data(json_file)
