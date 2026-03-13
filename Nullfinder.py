@@ -45,7 +45,7 @@ for json_file in get_json_files(DATA_DIR):
     log_missing_data(json_file)
 
 
-#add a feature that changes all the NaN values in the .Json files to say "Null"
+
 def replace_nan_with_null(json_file: Path) -> None:
     try:
         df = pd.read_json(json_file)
