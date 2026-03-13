@@ -8,6 +8,7 @@ class Janitor:
 
      def clean_metadata(self):
          metadata_file = self.data_dir / "movies_metadata.json"
+         print(metadata_file)
          try:
              df = pd.read_json(metadata_file)
          except ValueError:
@@ -15,20 +16,11 @@ class Janitor:
          except Exception as error:
              print(f"Failed to read JSON ({error})")
              return
-
+         print(df["homepage"])
          if "homepage" in df.columns:
+             print("My name is Gilbert")
              df = df.drop(columns=["homepage"])
              df.to_json(metadata_file, orient="records", lines=True)
-     def clean_metadata(self):
-         metadata_file = self.data_dir / "movies_metadata.json"
-         try:
-             df = pd.read_json(metadata_file)
-         except ValueError:
-             df = pd.read_json(metadata_file, lines=True)
-         except Exception as error:
-             print(f"Failed to read JSON ({error})")
-             return
 
-         if "homepage" in df.columns:
-             df = df.drop(columns=["homepage"])
-             df.to_json(metadata_file, orient="records", lines=True)
+
+Janitor(Path("LMS-DataStuff/movies-archive")).clean_metadata()
