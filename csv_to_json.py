@@ -38,6 +38,6 @@ def convert_files_to_json(folder_path):
 # Specify the path to your folder
 # Example for a folder named 'my_files' in the current working directory
 # You can change this to an absolute path like 'C:/Users/YourUser/Desktop/data'
-folder_to_process = 'LMS-DataStuff/movies-archive' 
+folder_to_process = 'LMS-DataStuff/trove-periodicals-data-main' 
 
 convert_files_to_json(folder_to_process)
