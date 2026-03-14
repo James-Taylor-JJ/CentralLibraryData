@@ -102,8 +102,7 @@ def music_pipeline():
         df["lyrics"] = df["lyrics"].apply(clean_lyrics)
 
     # 8️⃣ Convert release date
-    if "release_date" in df.columns:
-        df["release_date"] = pd.to_datetime(df["release_date"], errors="coerce")
+        df = df.map(str)
 
     # 9️⃣ Drop unnecessary columns
     df.drop(columns=DROP_COLS, errors="ignore", inplace=True)
@@ -114,18 +113,15 @@ def music_pipeline():
     print(f"Clean CSV saved → {OUTPUT_CSV}")
 
     # 1️⃣1️⃣ Save JSON for LMS
-    df.to_json(
-        OUTPUT_JSON,
-        orient="records",
-        indent=2,
-        force_ascii=False
-    )
+    df.to_json("LMS-DataStuff/music_data.json", orient="records",indent=2,force_ascii=False)
 
     print(f"JSON export saved → {OUTPUT_JSON}")
 
     # Preview output
     print("\nPreview of cleaned dataset:")
     print(df.head(5))
+
+
 
 # --------------------------------
 # RUN PIPELINE
